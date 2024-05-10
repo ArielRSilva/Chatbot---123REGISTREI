@@ -1,0 +1,514 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyO4WDijU//tpi2ln9hs6dbP",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/ArielRSilva/Chatbot---123REGISTREI/blob/main/chatbot%20test%20123registrei\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "vwDQhRxKps6y"
+      },
+      "outputs": [],
+      "source": [
+        "!pip install -q -U google-generativeai"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import google.generativeai as genai\n",
+        "\n",
+        "GOOGLE_API_KEY=\"AIzaSyA47cy7xmyJOTX97Fc8VlnJSvff84VtciE\"\n",
+        "genai.configure(api_key=GOOGLE_API_KEY)"
+      ],
+      "metadata": {
+        "id": "5mq1rSkStKMa"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Listar os modelos disponíveis"
+      ],
+      "metadata": {
+        "id": "6w5-bSo1tmnc"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for m in genai.list_models():\n",
+        "  if 'generateContent' in m.supported_generation_methods:\n",
+        "    print(m.name)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 139
+        },
+        "id": "vNIhq-6Ftu8n",
+        "outputId": "933bc949-221b-4fce-a67d-e8b6d627f269"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "models/gemini-1.0-pro\n",
+            "models/gemini-1.0-pro-001\n",
+            "models/gemini-1.0-pro-latest\n",
+            "models/gemini-1.0-pro-vision-latest\n",
+            "models/gemini-1.5-pro-latest\n",
+            "models/gemini-pro\n",
+            "models/gemini-pro-vision\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "generation_config = {\n",
+        "  \"candidate_count\": 1,\n",
+        "  \"temperature\": 0.1,\n",
+        "}"
+      ],
+      "metadata": {
+        "id": "_iWyw_A11O9g"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "safety_settings={\n",
+        "    'HATE': 'BLOCK_NONE',\n",
+        "    'HARASSMENT': 'BLOCK_NONE',\n",
+        "    'SEXUAL' : 'BLOCK_NONE',\n",
+        "    'DANGEROUS' : 'BLOCK_NONE'\n",
+        "    }"
+      ],
+      "metadata": {
+        "id": "6-3-_w_T1Ykw"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "model = genai.GenerativeModel(model_name='gemini-1.0-pro',\n",
+        "                                  generation_config=generation_config,\n",
+        "                                  safety_settings=safety_settings,)"
+      ],
+      "metadata": {
+        "id": "3BtlgDqf1bnm"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "response = model.generate_content(\"qual o órgão federal responsavel pelo registro de marcas no Brasil?\")\n",
+        "response.text"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 35
+        },
+        "id": "F4VCeCTI1j_d",
+        "outputId": "010e11af-df07-433c-d3ca-f7732248f569"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "'Instituto Nacional da Propriedade Industrial (INPI)'"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "string"
+            }
+          },
+          "metadata": {},
+          "execution_count": 24
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "chat = model.start_chat(history=[])"
+      ],
+      "metadata": {
+        "id": "umEqBvJV2sb2"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "prompt = input('Bem vindo(a) à 123REGISTREI qual sua dúvida?: ')\n",
+        "\n",
+        "while prompt != \"fim\":\n",
+        "  response = chat.send_message(prompt)\n",
+        "  print(\"Resposta:\", response.text, '\\n\\n')\n",
+        "  prompt = input('em que mais podemos ajudar?: ')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 104
+        },
+        "id": "95vq6kPf3NTg",
+        "outputId": "d23be9c2-da4a-42bb-9b7d-84f2125bad82"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "Bem vindo(a) à 123REGISTREI qual sua dúvida?: capital do brasil?\n",
+            "Resposta: Brasília \n",
+            "\n",
+            "\n",
+            "em que mais podemos ajudar?: fim\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "chat"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "JfVp8wyR66l5",
+        "outputId": "b90eb754-7a72-4e31-e37b-58aeca9e9d76"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "ChatSession(\n",
+              "    model=genai.GenerativeModel(\n",
+              "        model_name='models/gemini-1.0-pro',\n",
+              "        generation_config={'candidate_count': 1, 'temperature': 0.1},\n",
+              "        safety_settings={<HarmCategory.HARM_CATEGORY_HATE_SPEECH: 8>: <HarmBlockThreshold.BLOCK_NONE: 4>, <HarmCategory.HARM_CATEGORY_HARASSMENT: 7>: <HarmBlockThreshold.BLOCK_NONE: 4>, <HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: 9>: <HarmBlockThreshold.BLOCK_NONE: 4>, <HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: 10>: <HarmBlockThreshold.BLOCK_NONE: 4>},\n",
+              "        tools=None,\n",
+              "        system_instruction=None,\n",
+              "    ),\n",
+              "    history=[glm.Content({'parts': [{'text': 'qual o valor...ro de marcas?'}], 'role': 'user'}), glm.Content({'parts': [{'text': 'O valor do r... suas marcas.'}], 'role': 'model'}), glm.Content({'parts': [{'text': 'como funcion...ro de marcas?'}], 'role': 'user'}), glm.Content({'parts': [{'text': 'O processo d...ários países.'}], 'role': 'model'}), glm.Content({'parts': [{'text': 'qual a capital do brasil?'}], 'role': 'user'}), glm.Content({'parts': [{'text': 'Brasília'}], 'role': 'model'}), glm.Content({'parts': [{'text': 'fim'}], 'role': 'user'}), glm.Content({'parts': [{'text': 'Obrigado por...r em contato.'}], 'role': 'model'}), glm.Content({'parts': [{'text': 'capital do brasil?'}], 'role': 'user'}), glm.Content({'parts': [{'text': 'Brasília'}], 'role': 'model'})]\n",
+              ")"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 41
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "chat.history"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "GA1xSSjk7B1J",
+        "outputId": "f036ed63-8c9d-4807-aba9-3ec029d1edef"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "[parts {\n",
+              "   text: \"qual o valor do registro de marcas?\"\n",
+              " }\n",
+              " role: \"user\",\n",
+              " parts {\n",
+              "   text: \"O valor do registro de marcas pode variar significativamente dependendo de v\\303\\241rios fatores, incluindo:\\n\\n**Fatores Intang\\303\\255veis:**\\n\\n* **Reconhecimento e reputa\\303\\247\\303\\243o:** Uma marca registrada forte pode aumentar o reconhecimento e a reputa\\303\\247\\303\\243o da empresa, levando a uma maior fidelidade do cliente e vendas.\\n* **Prote\\303\\247\\303\\243o legal:** O registro de uma marca fornece prote\\303\\247\\303\\243o legal contra o uso n\\303\\243o autorizado por concorrentes, protegendo o valor da marca.\\n* **Valor de mercado:** Uma marca registrada pode ser um ativo valioso que pode ser licenciado ou vendido, gerando receita adicional.\\n* **Vantagem competitiva:** Uma marca registrada pode fornecer uma vantagem competitiva ao diferenciar produtos ou servi\\303\\247os de concorrentes.\\n\\n**Fatores Tang\\303\\255veis:**\\n\\n* **Custos de marketing:** O registro de uma marca pode reduzir os custos de marketing, pois ajuda a estabelecer a identidade da marca e a construir reconhecimento.\\n* **Custos de defesa:** O registro de uma marca pode reduzir os custos de defesa contra viola\\303\\247\\303\\265es de marca registrada, pois fornece evid\\303\\252ncias claras de propriedade.\\n* **Valor de revenda:** Uma marca registrada pode aumentar o valor de revenda de uma empresa, pois \\303\\251 um ativo reconhecido e protegido.\\n\\n**Outros Fatores:**\\n\\n* **Setor:** O valor do registro de marcas pode variar dependendo do setor. Marcas em setores competitivos, como moda ou tecnologia, podem ter um valor mais alto.\\n* **For\\303\\247a da marca:** Marcas fortes e bem estabelecidas t\\303\\252m um valor mais alto do que marcas fracas ou novas.\\n* **Extens\\303\\243o da prote\\303\\247\\303\\243o:** O escopo da prote\\303\\247\\303\\243o da marca registrada (por exemplo, nacional ou internacional) pode afetar seu valor.\\n\\nEm geral, o valor do registro de marcas \\303\\251 dif\\303\\255cil de quantificar com precis\\303\\243o, mas pode ser um ativo valioso para as empresas que buscam proteger e construir suas marcas.\"\n",
+              " }\n",
+              " role: \"model\",\n",
+              " parts {\n",
+              "   text: \"como funciona o registro de marcas?\"\n",
+              " }\n",
+              " role: \"user\",\n",
+              " parts {\n",
+              "   text: \"O processo de registro de marcas varia dependendo do pa\\303\\255s ou regi\\303\\243o, mas geralmente envolve as seguintes etapas:\\n\\n**1. Pesquisa de marca registrada:**\\n* Pesquise para garantir que a marca n\\303\\243o seja id\\303\\252ntica ou semelhante a uma marca registrada existente.\\n\\n**2. Escolha da classe de marca:**\\n* Identifique a classe de marca que melhor se adapta aos produtos ou servi\\303\\247os que voc\\303\\252 deseja proteger.\\n\\n**3. Preenchimento do pedido:**\\n* Preencha um pedido de registro de marca, incluindo informa\\303\\247\\303\\265es sobre a marca, o propriet\\303\\241rio e a classe de marca.\\n\\n**4. Apresenta\\303\\247\\303\\243o do pedido:**\\n* Apresente o pedido ao \\303\\263rg\\303\\243o respons\\303\\241vel pelo registro de marcas em seu pa\\303\\255s ou regi\\303\\243o.\\n\\n**5. Exame:**\\n* O \\303\\263rg\\303\\243o de registro examinar\\303\\241 o pedido para garantir que ele atenda aos requisitos legais e que a marca n\\303\\243o seja id\\303\\252ntica ou semelhante a uma marca registrada existente.\\n\\n**6. Publica\\303\\247\\303\\243o:**\\n* Se o pedido for aprovado, a marca ser\\303\\241 publicada em um di\\303\\241rio oficial ou banco de dados de marcas registradas.\\n\\n**7. Oposi\\303\\247\\303\\243o:**\\n* Terceiros podem apresentar oposi\\303\\247\\303\\243o ao registro da marca dentro de um prazo espec\\303\\255fico.\\n\\n**8. Registro:**\\n* Se n\\303\\243o houver oposi\\303\\247\\303\\243o ou se as oposi\\303\\247\\303\\265es forem resolvidas, a marca ser\\303\\241 registrada e receber\\303\\241 um certificado de registro.\\n\\n**9. Renova\\303\\247\\303\\243o:**\\n* Os registros de marcas geralmente precisam ser renovados periodicamente para manter sua validade.\\n\\n**Observa\\303\\247\\303\\265es:**\\n\\n* O processo de registro de marcas pode levar v\\303\\241rios meses ou at\\303\\251 anos.\\n* Os custos de registro de marcas variam dependendo do pa\\303\\255s ou regi\\303\\243o e do escopo da prote\\303\\247\\303\\243o desejada.\\n* \\303\\211 aconselh\\303\\241vel consultar um advogado de marcas registradas para obter orienta\\303\\247\\303\\243o durante o processo.\\n\\n**Registro Internacional de Marcas:**\\n\\nO Sistema de Madri para o Registro Internacional de Marcas permite que os propriet\\303\\241rios de marcas registrem suas marcas em v\\303\\241rios pa\\303\\255ses por meio de um \\303\\272nico pedido. Isso pode simplificar e reduzir os custos do registro de marcas em v\\303\\241rios pa\\303\\255ses.\"\n",
+              " }\n",
+              " role: \"model\",\n",
+              " parts {\n",
+              "   text: \"qual a capital do brasil?\"\n",
+              " }\n",
+              " role: \"user\",\n",
+              " parts {\n",
+              "   text: \"Bras\\303\\255lia\"\n",
+              " }\n",
+              " role: \"model\",\n",
+              " parts {\n",
+              "   text: \"fim\"\n",
+              " }\n",
+              " role: \"user\",\n",
+              " parts {\n",
+              "   text: \"Obrigado por usar meus servi\\303\\247os. Estou sempre aprendendo e melhorando, ent\\303\\243o se voc\\303\\252 tiver algum feedback ou pergunta, n\\303\\243o hesite em entrar em contato.\"\n",
+              " }\n",
+              " role: \"model\",\n",
+              " parts {\n",
+              "   text: \"capital do brasil?\"\n",
+              " }\n",
+              " role: \"user\",\n",
+              " parts {\n",
+              "   text: \"Bras\\303\\255lia\"\n",
+              " }\n",
+              " role: \"model\"]"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 42
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#Melhorando a visualização\n",
+        "#Código disponível em https://ai.google.dev/tutorials/python_quickstart#import_packages\n",
+        "import textwrap\n",
+        "from IPython.display import display\n",
+        "from IPython.display import Markdown\n",
+        "\n",
+        "def to_markdown(text):\n",
+        "  text = text.replace('•', '  *')\n",
+        "  return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))\n",
+        "\n",
+        "#Imprimindo o histórico\n",
+        "for message in chat.history:\n",
+        "  display(to_markdown(f'**{message.role}**: {message.parts[0].text}'))\n",
+        "  print('-------------------------------------------')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 1000
+        },
+        "id": "2v3ucWc46q_F",
+        "outputId": "18e4cf4a-c3de-454f-f10d-6a19b37052be"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **user**: qual o valor do registro de marcas?"
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **model**: O valor do registro de marcas pode variar significativamente dependendo de vários fatores, incluindo:\n> \n> **Fatores Intangíveis:**\n> \n> * **Reconhecimento e reputação:** Uma marca registrada forte pode aumentar o reconhecimento e a reputação da empresa, levando a uma maior fidelidade do cliente e vendas.\n> * **Proteção legal:** O registro de uma marca fornece proteção legal contra o uso não autorizado por concorrentes, protegendo o valor da marca.\n> * **Valor de mercado:** Uma marca registrada pode ser um ativo valioso que pode ser licenciado ou vendido, gerando receita adicional.\n> * **Vantagem competitiva:** Uma marca registrada pode fornecer uma vantagem competitiva ao diferenciar produtos ou serviços de concorrentes.\n> \n> **Fatores Tangíveis:**\n> \n> * **Custos de marketing:** O registro de uma marca pode reduzir os custos de marketing, pois ajuda a estabelecer a identidade da marca e a construir reconhecimento.\n> * **Custos de defesa:** O registro de uma marca pode reduzir os custos de defesa contra violações de marca registrada, pois fornece evidências claras de propriedade.\n> * **Valor de revenda:** Uma marca registrada pode aumentar o valor de revenda de uma empresa, pois é um ativo reconhecido e protegido.\n> \n> **Outros Fatores:**\n> \n> * **Setor:** O valor do registro de marcas pode variar dependendo do setor. Marcas em setores competitivos, como moda ou tecnologia, podem ter um valor mais alto.\n> * **Força da marca:** Marcas fortes e bem estabelecidas têm um valor mais alto do que marcas fracas ou novas.\n> * **Extensão da proteção:** O escopo da proteção da marca registrada (por exemplo, nacional ou internacional) pode afetar seu valor.\n> \n> Em geral, o valor do registro de marcas é difícil de quantificar com precisão, mas pode ser um ativo valioso para as empresas que buscam proteger e construir suas marcas."
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **user**: como funciona o registro de marcas?"
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **model**: O processo de registro de marcas varia dependendo do país ou região, mas geralmente envolve as seguintes etapas:\n> \n> **1. Pesquisa de marca registrada:**\n> * Pesquise para garantir que a marca não seja idêntica ou semelhante a uma marca registrada existente.\n> \n> **2. Escolha da classe de marca:**\n> * Identifique a classe de marca que melhor se adapta aos produtos ou serviços que você deseja proteger.\n> \n> **3. Preenchimento do pedido:**\n> * Preencha um pedido de registro de marca, incluindo informações sobre a marca, o proprietário e a classe de marca.\n> \n> **4. Apresentação do pedido:**\n> * Apresente o pedido ao órgão responsável pelo registro de marcas em seu país ou região.\n> \n> **5. Exame:**\n> * O órgão de registro examinará o pedido para garantir que ele atenda aos requisitos legais e que a marca não seja idêntica ou semelhante a uma marca registrada existente.\n> \n> **6. Publicação:**\n> * Se o pedido for aprovado, a marca será publicada em um diário oficial ou banco de dados de marcas registradas.\n> \n> **7. Oposição:**\n> * Terceiros podem apresentar oposição ao registro da marca dentro de um prazo específico.\n> \n> **8. Registro:**\n> * Se não houver oposição ou se as oposições forem resolvidas, a marca será registrada e receberá um certificado de registro.\n> \n> **9. Renovação:**\n> * Os registros de marcas geralmente precisam ser renovados periodicamente para manter sua validade.\n> \n> **Observações:**\n> \n> * O processo de registro de marcas pode levar vários meses ou até anos.\n> * Os custos de registro de marcas variam dependendo do país ou região e do escopo da proteção desejada.\n> * É aconselhável consultar um advogado de marcas registradas para obter orientação durante o processo.\n> \n> **Registro Internacional de Marcas:**\n> \n> O Sistema de Madri para o Registro Internacional de Marcas permite que os proprietários de marcas registrem suas marcas em vários países por meio de um único pedido. Isso pode simplificar e reduzir os custos do registro de marcas em vários países."
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **user**: qual a capital do brasil?"
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **model**: Brasília"
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **user**: fim"
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **model**: Obrigado por usar meus serviços. Estou sempre aprendendo e melhorando, então se você tiver algum feedback ou pergunta, não hesite em entrar em contato."
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **user**: capital do brasil?"
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **model**: Brasília"
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
